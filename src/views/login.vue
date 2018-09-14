@@ -19,28 +19,28 @@
     </div>
 </template>
 <script>
-export default {
-    data () {
-        return {
-          form: {
-            name:'',
-            password:''
-          },
-          rules:{
-              name:[
-                  {required: true, message: '请输入用户名', trigger: 'blur'}
-              ],
-              password:[
-                  {required: true, message: '请输入密码', trigger: 'blur'}
-              ]
+    export default {
+        data () {
+            return {
+            form: {
+                name:'',
+                password:''
+            },
+            rules:{
+                name:[
+                    {required: true, message: '请输入用户名', trigger: 'blur'}
+                ],
+                password:[
+                    {required: true, message: '请输入密码', trigger: 'blur'}
+                ]
+                }
             }
         }
     }
-}
 </script>
 
 <style lang="scss" scoped>
-    .login {
+.login {
   position: fixed;
   width: 100%;
   height: 100%;
