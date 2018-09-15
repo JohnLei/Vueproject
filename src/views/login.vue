@@ -6,34 +6,55 @@
             <img src="../assets/avatar.jpg" alt="">
         </div>
     </el-form-item>
-    <el-form-item prop="name">
-    <el-input v-model="form.name" placeholder="账户" prefix-icon="myicon myicon-user"></el-input>
+    <el-form-item prop="username">
+    <el-input v-model="form.username" placeholder="账户" prefix-icon="myicon myicon-user"></el-input>
     </el-form-item>
     <el-form-item prop="password">
     <el-input v-model="form.password" placeholder="密码" prefix-icon="myicon myicon-key" type="password"></el-input>
     </el-form-item>
     <el-form-item>
-        <el-button type="primary" class="login-btn">登录</el-button>
+        <el-button type="primary" class="login-btn" @click="loginSubmit('form')">登录</el-button>
     </el-form-item>
     </el-form>
     </div>
 </template>
 <script>
+    import {CheckLogin} from '@/api'
     export default {
         data () {
             return {
             form: {
-                name:'',
+                username:'',
                 password:''
             },
             rules:{
-                name:[
+                username:[
                     {required: true, message: '请输入用户名', trigger: 'blur'}
                 ],
                 password:[
                     {required: true, message: '请输入密码', trigger: 'blur'}
                 ]
                 }
+            }
+        },
+        methods:{
+            loginSubmit(formName) {
+                this.$refs[formName].validate(valid =>{
+                    if (valid) {
+                       //发送请求
+                       CheckLogin(this.form).then(res => {
+                        //  console.log(res)
+                         if (res.meta.status === 200) {
+                            this.$router.push({name:'home'}) 
+                         } else {     
+                            this.$message({
+                                type: 'error',    
+                                message: res.meta.msg
+                            })
+                         }
+                       }) 
+                    }
+                })
             }
         }
     }
