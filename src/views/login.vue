@@ -43,8 +43,10 @@
                     if (valid) {
                        //发送请求
                        CheckLogin(this.form).then(res => {
-                        //  console.log(res)
+                       // console.log(res)
                          if (res.meta.status === 200) {
+                             // 存入token
+                            localStorage.setItem('keytoken',res.data.token)
                             this.$router.push({name:'home'}) 
                          } else {     
                             this.$message({
