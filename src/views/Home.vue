@@ -14,16 +14,16 @@
         },
         created () {
             getUserList({
-                params: {
-                    query:'',
-                    pagenum:'1',
-                    pagesize:'1'
-                }
-            }).then(res => {
-                console.log(res)
-            })
-        }
+            params: {
+                query:'',
+                pagenum:'1',
+                pagesize:'1'
+            }
+        }).then(res => {
+            // console.log(res)
+        })
     }
+}
 </script>
 <style lang="scss" scoped>
 
