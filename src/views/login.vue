@@ -47,6 +47,8 @@
                          if (res.meta.status === 200) {
                              // 存入token
                             localStorage.setItem('keytoken',res.data.token)
+                            // 把username存入localStorage中
+                            this.$store.commit('setUsername',res.data.username)
                             this.$router.push({name:'home'}) 
                          } else {     
                             this.$message({

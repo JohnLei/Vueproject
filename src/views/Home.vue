@@ -28,7 +28,7 @@
         <el-header>
             <i class="myicon myicon-menu toggle-btn" @click="toggleCollapse"></i>
             <div class="system-title">电商后台管理系统</div>
-            <span class="welcome">您好,XXX</span>
+            <span class="welcome">您好,{{$store.getters.username}}</span>
             <el-button type="info" @click="layout">退出</el-button>
         </el-header>
         <el-main>
@@ -113,6 +113,9 @@
     }
     .logout-btn {
         color: orange;
+    }
+    .welcome {
+        color: #fff;
     }
   }
 </style>
