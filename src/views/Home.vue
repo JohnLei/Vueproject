@@ -5,10 +5,11 @@
         <el-aside width="auto">
             <div class="logo"></div>
             <el-menu
-            default-active="2"
-            class="el-menu-vertical-demo"
+            :router="true"
+            :collapse="isCollapse"
+            class="el-menu-admin"
             @open="handleOpen"
-            @close="handleClose" :collapse="isCollapse"
+            @close="handleClose"
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
@@ -17,7 +18,7 @@
                 <i class="el-icon-location"></i>
                 <span>用户管理</span>
                 </template>
-                 <el-menu-item index="2">
+                 <el-menu-item index="/user">
                 <i class="el-icon-menu"></i>
                 <span slot="title">用户列表</span>
             </el-menu-item>
@@ -29,7 +30,7 @@
             <i class="myicon myicon-menu toggle-btn" @click="toggleCollapse"></i>
             <div class="system-title">电商后台管理系统</div>
             <span class="welcome">您好,{{$store.getters.username}}</span>
-            <el-button type="info" @click="layout">退出</el-button>
+            <el-button type="text" @click="layout">退出</el-button>
         </el-header>
         <el-main>
             <router-view></router-view>
