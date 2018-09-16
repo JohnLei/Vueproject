@@ -41,6 +41,20 @@
           prop="mobile"
           label="电话">
         </el-table-column>
+        <el-table-column label="用户状态">
+        <template slot-scope="scope">
+          <el-switch
+          v-model="value3">
+        </el-switch>
+        </template>
+      </el-table-column>
+        <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
+          <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
+          <el-button size="mini" type="warning" plain icon="el-icon-check"></el-button>
+        </template>
+    </el-table-column>
       </el-table>
       <div class="page">
       <el-pagination
@@ -61,7 +75,8 @@ import {getUserList} from '@/api'
 export default{
     data() {
       return {
-        userList: []
+        userList: [],
+        value3:''
       }
     },
     created () {
