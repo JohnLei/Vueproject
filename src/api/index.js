@@ -16,4 +16,7 @@ Axios.interceptors.request.use(function (config) {
 })
 // 导出登录验证checklogin方法
 export const CheckLogin = params => Axios.post('login', params).then(res => res.data)
+// 获取用户列表的方法
 export const getUserList = params => Axios.get('users', params).then(res => res.data)
+// 修改用户状态
+export const changeUserState = params => Axios.put(`users/${params.uId}/state/${params.type}`).then(res => res.data)
