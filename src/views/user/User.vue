@@ -92,7 +92,7 @@
      <el-dialog title="编辑用户" :visible.sync="editDialogFormVisible">
         <el-form :model="editForm" label-width="80px" :rules="rules" ref="editForm">
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="editForm.username" auto-complete="off"></el-input>
+            <el-input v-model="editForm.username" auto-complete="off" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="editForm.email" auto-complete="off"></el-input>
