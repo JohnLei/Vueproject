@@ -20,6 +20,10 @@
         </el-col>
         </el-row>
           <el-table
+          v-loading="loading2"
+          element-loading-text="拼命加载中"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
         :data="userList"
         border
         style="width: 100%">
@@ -137,6 +141,8 @@ import {getUserList,changeUserState,addUser,getUserById,editUser,delUser,getRole
 export default{
     data() {
       return {
+        //图表加载
+        loading2:true,
         userList: [],
         // value3:'',
         query:'',
@@ -198,6 +204,7 @@ export default{
       },
       //初始化数据
       initList () {
+        this.loading2 = true
         getUserList({
           params:{
             query:this.query,
@@ -206,13 +213,17 @@ export default{
           }
         }).then(res => {
           console.log(res)
-          this.userList = res.data.users
-          this.total = res.data.total
+          if (res.meta.status === 200) {
+             this.userList = res.data.users
+             this.total = res.data.total
+             this.loading2 = false
+          }
         })
       },
       //监听开关按钮的状态
       changeUserState (row) {
         // console.log(row)
+        //改变用户状态
         changeUserState({
             uId:row.id,
             type:row.mg_state
@@ -311,24 +322,31 @@ export default{
         })
       },
       grantRoleSubmit () {
-        grantUserrole({
-          id:this.grantForm.id,
-          rid:this.roleId
-        }).then(res => {
-          // console.log(res)
-          if (res.meta.status === 200) {
-            this.$message({
-            type:'success',
-            message: '设置角色成功'
+        if (!this.roleId) {
+          this.$message({
+            type:'warning',
+            message:'请选择您需要的权限:'
           })
-            this.grantDialogFormVisible = false
-          } else {
-            this.$message({
-              type:'warning',
-              message:res.meta.msg
+        } else {
+            grantUserrole({
+            id:this.grantForm.id,
+            rid:this.roleId
+          }).then(res => {
+            // console.log(res)
+            if (res.meta.status === 200) {
+              this.$message({
+              type:'success',
+              message: '设置角色成功'
             })
-          }
+              this.grantDialogFormVisible = false
+            } else {
+              this.$message({
+                type:'warning',
+                message:res.meta.msg
+              })
+           }
         })
+        }
       }
     },     
 }
