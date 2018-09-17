@@ -19,7 +19,7 @@ const actions = {}
 const getters = {
   username: (state) => {
     // 重新获取localStorage中的值
-    return localStorage.getItem('username')
+    return state.username
   }
 }
 // 导出store

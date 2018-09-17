@@ -20,3 +20,5 @@ export const CheckLogin = params => Axios.post('login', params).then(res => res.
 export const getUserList = params => Axios.get('users', params).then(res => res.data)
 // 修改用户状态
 export const changeUserState = params => Axios.put(`users/${params.uId}/state/${params.type}`).then(res => res.data)
+// 添加用户
+export const addUser = params => Axios.post('users', params).then(res => res.data)
