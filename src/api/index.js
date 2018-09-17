@@ -26,3 +26,5 @@ export const addUser = params => Axios.post('users', params).then(res => res.dat
 export const getUserById = params => Axios.get(`users/${params}`).then(res => res.data)
 // 提交用户编辑
 export const editUser = params => Axios.put(`users/${params.id}`, params).then(res => res.data)
+// 删除用户数据
+export const delUser = params => Axios.delete(`users/${params}`).then(res => res.data)

@@ -51,7 +51,7 @@
         <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEdit(scope.row)"></el-button>
-          <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
+          <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="showDel(scope.row)"></el-button>
           <el-button size="mini" type="warning" plain icon="el-icon-check"></el-button>
         </template>
     </el-table-column>
@@ -106,11 +106,12 @@
           <el-button type="primary" @click="editUserSubmit('editForm')">确 定</el-button>
         </div>
     </el-dialog>
+    <!-- 删除提示框 -->
     </div>
 </template>
            
 <script>
-import {getUserList,changeUserState,addUser,getUserById,editUser} from '@/api'
+import {getUserList,changeUserState,addUser,getUserById,editUser,delUser} from '@/api'
 export default{
     data() {
       return {
@@ -246,6 +247,28 @@ export default{
               }
             })
           }
+        })
+      },
+      showDel (row) {
+        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delUser (row.id).then(res => {
+            if (res.meta.status === 200) {
+              this.$message({
+              type: 'success',
+              message: '删除成功!'
+              })
+              this.initList()
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })         
         })
       }
     },     

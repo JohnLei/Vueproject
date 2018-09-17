@@ -5,7 +5,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 const state = {
   // 定义仓库数据
-  username: ''
+  username: localStorage.getItem('username')
 }
 const mutations = {
   // 获取数据
@@ -17,10 +17,10 @@ const mutations = {
 }
 const actions = {}
 const getters = {
-  username: (state) => {
-    // 重新获取localStorage中的值
-    return state.username
-  }
+  // username: (state) => {
+  //   // 重新获取localStorage中的值
+  //   return state.username
+  // }
 }
 // 导出store
 export default new Vuex.Store({
