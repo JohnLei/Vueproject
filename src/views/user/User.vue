@@ -50,7 +50,7 @@
       </el-table-column>
         <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
+          <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEdit(scope.row)"></el-button>
           <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
           <el-button size="mini" type="warning" plain icon="el-icon-check"></el-button>
         </template>
@@ -88,11 +88,29 @@
           <el-button type="primary" @click="AdduserSubmit('addForm')">确 定</el-button>
         </div>
     </el-dialog>
+    <!-- 编辑用户对话框 -->
+     <el-dialog title="编辑用户" :visible.sync="editDialogFormVisible">
+        <el-form :model="editForm" label-width="80px" :rules="rules" ref="editForm">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="editForm.username" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="editForm.email" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="mobile">
+            <el-input v-model="editForm.mobile" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="editDialogFormVisible= false">取 消</el-button>
+          <el-button type="primary" @click="editUserSubmit('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
     </div>
 </template>
            
 <script>
-import {getUserList,changeUserState,addUser} from '@/api'
+import {getUserList,changeUserState,addUser,getUserById,editUser} from '@/api'
 export default{
     data() {
       return {
@@ -108,7 +126,14 @@ export default{
           email:'',
           mobile:''
         },
+        editForm:{
+          username:'',
+          email:'',
+          mobile:'',
+          id:0
+        },
         addDialogFormVisible:false,
+        editDialogFormVisible:false,
         //添加表单验证
         rules:{
           username: [{ 
@@ -191,6 +216,34 @@ export default{
               }
               this.addDialogFormVisible = false
               this.initList()
+            })
+          }
+        })
+      },
+      showEdit (row) {
+        this.editDialogFormVisible = true
+        getUserById (row.id).then(res => {
+          if (res.meta.status === 200) {
+            this.editForm.username = res.data.username
+            this.editForm.email = res.data.email
+            this.editForm.mobile = res.data.mobile
+            this.editForm.id = res.data.id
+          }
+        })
+      },
+      editUserSubmit (formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            // 发送编辑请求
+            editUser (this.editForm).then(res => {
+              if (res.meta.status === 200) {
+                  this.$message({
+                  type: 'success',
+                  message: '修改用户成功!'
+                })
+                this.editDialogFormVisible = false
+                this.initList()
+              }
             })
           }
         })

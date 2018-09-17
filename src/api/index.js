@@ -22,3 +22,7 @@ export const getUserList = params => Axios.get('users', params).then(res => res.
 export const changeUserState = params => Axios.put(`users/${params.uId}/state/${params.type}`).then(res => res.data)
 // 添加用户
 export const addUser = params => Axios.post('users', params).then(res => res.data)
+// 根据ID查询用户信息
+export const getUserById = params => Axios.get(`users/${params}`).then(res => res.data)
+// 提交用户编辑
+export const editUser = params => Axios.put(`users/${params.id}`, params).then(res => res.data)
