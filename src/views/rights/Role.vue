@@ -50,7 +50,7 @@
       <template slot-scope="scope">
         <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
         <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
-        <el-button size="mini" type="warning" plain icon="el-icon-check" @click="showRoleDialog"></el-button>
+        <el-button size="mini" type="warning" plain icon="el-icon-check" @click="showRoleDialog(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -71,14 +71,16 @@
     </el-dialog>
     <!-- 角色授权窗口组件 -->
     <el-dialog title="角色授权" :visible.sync="RoleDialogFormVisible">
-      <el-tree
-      :data="data2"
-      show-checkbox
-      node-key="id"
-      :default-expand-all="true"
-      :default-checked-keys="[5]"
-      :props="defaultProps">
-      </el-tree>
+      <div class="container">
+        <el-tree
+        :data="RightsList"
+        show-checkbox
+        node-key="id"
+        :default-expand-all="true"
+        :default-checked-keys="selectRights"
+        :props="defaultProps">
+        </el-tree>
+      </div>
        <div slot="footer" class="dialog-footer">
         <el-button @click="RoleDialogFormVisible= false">取 消</el-button>
         <el-button type="primary">确 定</el-button>
@@ -104,41 +106,9 @@ export default{
           }]
       },
       // 树状窗口
-      data2: [{
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
+      RightsList: [],
+      selectRights:[], //  权限选中项
+      cuurentRole:{}, // 保存选中项
         defaultProps: {
           children: 'children',
           label: 'authName'
@@ -190,14 +160,29 @@ export default{
     // 角色授权数据显示
     showRoleDialog (row) {
       this.RoleDialogFormVisible = true
+      this.cuurentRole = row
       // 发送请求渲染权限列表
       getRightList ({type:'tree'}).then(res => {
         if (res.meta.status === 200) {
-          this.data2 = res.data
+          this.RightsList = res.data
         } else {
           this.$message({
             type: 'error',
             message: res.meta.msg
+          })
+        }
+      })
+      // 遍历之前清空数组
+      this.selectRights.length = null
+      // 取出当前所有的权限，然后遍历到第三个children，取出它里面的所有的项的id，存进selectedRights中
+      this.cuurentRole.children.forEach(first => {
+        if (first.children && first.children.length !==0) {
+          first.children.forEach(second => {
+            if (second.children && second.children.length !==0) {
+              second.children.forEach(third => {
+                this.selectRights.push(third.id)
+              })
+            }
           })
         }
       })
@@ -212,6 +197,10 @@ export default{
   .role {
     .el-tag {
       margin: 5px 0 5px 5px;
+    }
+    .container {
+      height: 400px;
+      overflow: auto
     }
   }
 </style>
