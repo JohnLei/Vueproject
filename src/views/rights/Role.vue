@@ -20,17 +20,17 @@
      <template slot-scope="props">
        <el-row v-for="firstChildren in props.row.children" :key="firstChildren.id">
         <el-col :span="4">
-          <el-tag closable>{{firstChildren.authName}}</el-tag>
+          <el-tag closable @close="deleteRight(props.row,firstChildren.id)">{{firstChildren.authName}}</el-tag>
           <i class="el-icon-arrow-right" v-if="firstChildren.children.length !==0"></i>
         </el-col>
         <el-col :span="20">
           <el-row v-for="secondChildren in firstChildren.children" :key="secondChildren.id">
             <el-col :span="4">
-              <el-tag closable type="success">{{secondChildren.authName}}</el-tag>
+              <el-tag closable type="success" @close="deleteRight(props.row,secondChildren.id)">{{secondChildren.authName}}</el-tag>
               <i class="el-icon-arrow-right" v-if="secondChildren.children.length !==0"></i>
             </el-col>
             <el-col :span="20">
-                <el-tag closable type="warning" v-for="thirChildren in secondChildren.children" :key="thirChildren.id">{{thirChildren.authName}}</el-tag>
+                <el-tag @close="deleteRight(props.row,thirChildren.id)" closable type="warning" v-for="thirChildren in secondChildren.children" :key="thirChildren.id">{{thirChildren.authName}}</el-tag>
               </el-col>
             </el-row >
         </el-col>
@@ -73,7 +73,7 @@
 </template>
            
 <script>
-import {getRoleList,AddRoles} from '@/api'
+import {getRoleList,AddRoles,deleteRolesRight} from '@/api'
 export default{
   data () {
     return {
@@ -92,12 +92,13 @@ export default{
   methods: {
     initRoleList () {
       getRoleList ().then(res => {
-      console.log(res)
+      // console.log(res)
       if (res.meta.status === 200) {
         this.RolesList = res.data
       }
     })
     },
+    // 添加角色
     AddroleSubmit (formName) {
      this.$refs[formName].validate(valid => {
        if (valid) {
@@ -114,6 +115,21 @@ export default{
          })
        }
      })
+    },
+    // 删除角色指定权限
+    deleteRight (row,rightId) {
+      // console.log(row,rightId)
+      deleteRolesRight ({roleId:row.id,rightId:rightId}).then(res => {
+        console.log(res.data)
+        if (res.meta.status === 200) {
+          row.children = res.data
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.meta.msg
+          })
+        }
+      })
     }
   },
   created() {

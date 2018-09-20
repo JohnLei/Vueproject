@@ -36,3 +36,5 @@ export const grantUserrole = params => Axios.put(`users/${params.id}/role`, {id:
 export const getRightList = params => Axios.get(`rights/${params.type}`).then(res => res.data)
 // 添加角色
 export const AddRoles = params => Axios.post('roles', params).then(res => res.data)
+// 删除角色指定权限
+export const deleteRolesRight = params => Axios.delete(`roles/${params.roleId}/rights/${params.rightId}`).then(res => res.data)
