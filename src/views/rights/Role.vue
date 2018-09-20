@@ -48,7 +48,7 @@
     <el-table-column
       label="操作">
       <template slot-scope="scope">
-        <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
+        <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEditrole(scope.row)"></el-button>
         <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
         <el-button size="mini" type="warning" plain icon="el-icon-check" @click="showRoleDialog(scope.row)"></el-button>
       </template>
@@ -68,6 +68,21 @@
           <el-button @click="addroleDialogFormVisible= false">取 消</el-button>
           <el-button type="primary" @click="AddroleSubmit('addroleForm')">确 定</el-button>
         </div>
+    </el-dialog>
+    <!-- 编辑角色信息 -->
+    <el-dialog title="编辑角色信息" :visible.sync="editroleDialogFormVisible">
+      <el-form :model="editroleForm" label-width="80px" :rules="rules" ref="editroleForm">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="editroleForm.roleName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input v-model="editroleForm.roleDesc" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editroleDialogFormVisible= false">取 消</el-button>
+        <el-button type="primary" @click="EditroleSubmit('editroleForm')">确 定</el-button>
+      </div>
     </el-dialog>
     <!-- 角色授权窗口组件 -->
     <el-dialog title="角色授权" :visible.sync="RoleDialogFormVisible">
@@ -90,15 +105,22 @@
 </template>
            
 <script>
-import {getRoleList,AddRoles,deleteRolesRight,getRightList} from '@/api'
+import {getRoleList,AddRoles,deleteRolesRight,getRightList,getRolesById,Editrole} from '@/api'
 export default{
   data () {
     return {
       RolesList: [],
-      addroleDialogFormVisible:false,
-      RoleDialogFormVisible:false,
+      addroleDialogFormVisible:false, //添加角色对话框
+      RoleDialogFormVisible:false,  // 角色授权
+      editroleDialogFormVisible:false, //修改角色对话框
       addroleForm:{
         roleName:'',
+      },
+      // 修改角色
+      editroleForm:{
+        roleName:'',
+        roleDesc:'',
+        id:0
       },
       rules:{
         roleName: [{ 
@@ -141,6 +163,35 @@ export default{
          })
        }
      })
+    },
+    // 修改(编辑)角色
+    showEditrole (row) {
+      this.editroleDialogFormVisible = true
+      getRolesById (row.id).then(res => {
+        console.log(res)
+        if (res.meta.status === 200) {
+          this.editroleForm.id = res.data.roleId
+          this.editroleForm.roleName = res.data.roleName
+          this.editroleForm.roleDesc = res.data.roleDesc
+        }
+      })
+    },
+    // 修改角色信息
+    EditroleSubmit (formName) {
+      this.$refs[formName].validate(valid => {
+        //发送编辑请求
+        Editrole (this.editroleForm).then(res => {
+          // console.log(res)
+          if (res.meta.status === 200) {
+            this.$message({
+              type: 'success',
+              message: '修改用户成功!'
+            })
+            this.editroleDialogFormVisible = false
+            this.initRoleList()
+          }
+        })
+      }) 
     },
     // 删除角色指定权限
     deleteRight (row,rightId) {
