@@ -34,3 +34,5 @@ export const getRoleList = params => Axios.get('roles').then(res => res.data)
 export const grantUserrole = params => Axios.put(`users/${params.id}/role`, {id: params.id, rid: params.rid}).then(res => res.data)
 // 获取权限名称列表
 export const getRightList = params => Axios.get(`rights/${params.type}`).then(res => res.data)
+// 添加角色
+export const AddRoles = params => Axios.post('roles', params).then(res => res.data)
