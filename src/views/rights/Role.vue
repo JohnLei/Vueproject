@@ -50,7 +50,7 @@
       <template slot-scope="scope">
         <el-button size="mini" type="primary" plain icon="el-icon-edit"></el-button>
         <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
-        <el-button size="mini" type="warning" plain icon="el-icon-check"></el-button>
+        <el-button size="mini" type="warning" plain icon="el-icon-check" @click="showRoleDialog"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -69,16 +69,32 @@
           <el-button type="primary" @click="AddroleSubmit('addroleForm')">确 定</el-button>
         </div>
     </el-dialog>
+    <!-- 角色授权窗口组件 -->
+    <el-dialog title="角色授权" :visible.sync="RoleDialogFormVisible">
+      <el-tree
+      :data="data2"
+      show-checkbox
+      node-key="id"
+      :default-expand-all="true"
+      :default-checked-keys="[5]"
+      :props="defaultProps">
+      </el-tree>
+       <div slot="footer" class="dialog-footer">
+        <el-button @click="RoleDialogFormVisible= false">取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
            
 <script>
-import {getRoleList,AddRoles,deleteRolesRight} from '@/api'
+import {getRoleList,AddRoles,deleteRolesRight,getRightList} from '@/api'
 export default{
   data () {
     return {
       RolesList: [],
       addroleDialogFormVisible:false,
+      RoleDialogFormVisible:false,
       addroleForm:{
         roleName:'',
       },
@@ -86,6 +102,46 @@ export default{
         roleName: [{ 
               required: true, message: '请输入角色名', trigger: 'blur'
           }]
+      },
+      // 树状窗口
+      data2: [{
+          id: 1,
+          label: '一级 1',
+          children: [{
+            id: 4,
+            label: '二级 1-1',
+            children: [{
+              id: 9,
+              label: '三级 1-1-1'
+            }, {
+              id: 10,
+              label: '三级 1-1-2'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '一级 2',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
+          }, {
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '一级 3',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2'
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'authName'
       }
     }
   },
@@ -123,6 +179,21 @@ export default{
         console.log(res.data)
         if (res.meta.status === 200) {
           row.children = res.data
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.meta.msg
+          })
+        }
+      })
+    },
+    // 角色授权数据显示
+    showRoleDialog (row) {
+      this.RoleDialogFormVisible = true
+      // 发送请求渲染权限列表
+      getRightList ({type:'tree'}).then(res => {
+        if (res.meta.status === 200) {
+          this.data2 = res.data
         } else {
           this.$message({
             type: 'error',
