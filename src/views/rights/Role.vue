@@ -49,7 +49,7 @@
       label="操作">
       <template slot-scope="scope">
         <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="showEditrole(scope.row)"></el-button>
-        <el-button size="mini" type="danger" plain icon="el-icon-delete"></el-button>
+        <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="showDelrolw(scope.row)"></el-button>
         <el-button size="mini" type="warning" plain icon="el-icon-check" @click="showRoleDialog(scope.row)"></el-button>
       </template>
     </el-table-column>
@@ -105,7 +105,7 @@
 </template>
            
 <script>
-import {getRoleList,AddRoles,deleteRolesRight,getRightList,getRolesById,Editrole} from '@/api'
+import {getRoleList,AddRoles,deleteRolesRight,getRightList,getRolesById,Editrole,delRoles} from '@/api'
 export default{
   data () {
     return {
@@ -192,6 +192,30 @@ export default{
           }
         })
       }) 
+    },
+    // 删除角色
+    showDelrolw (row) {
+      this.$confirm('此操作将永久删除该角色信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delRoles(row.id).then(res => {
+            // console.log(res)
+            if (res.meta.status === 200) {
+                this.$message({
+                type: 'success',
+                message: '删除成功!'
+             })
+             this.initRoleList()
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })          
+        })
     },
     // 删除角色指定权限
     deleteRight (row,rightId) {
