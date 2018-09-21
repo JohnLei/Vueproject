@@ -91,6 +91,7 @@
         :data="RightsList"
         show-checkbox
         node-key="id"
+        ref="tree"
         :default-expand-all="true"
         :default-checked-keys="selectRights"
         :props="defaultProps">
@@ -98,14 +99,14 @@
       </div>
        <div slot="footer" class="dialog-footer">
         <el-button @click="RoleDialogFormVisible= false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button type="primary" @click="submitGrant">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
            
 <script>
-import {getRoleList,AddRoles,deleteRolesRight,getRightList,getRolesById,Editrole,delRoles} from '@/api'
+import {getRoleList,AddRoles,deleteRolesRight,getRightList,getRolesById,Editrole,delRoles,grantRoles} from '@/api'
 export default{
   data () {
     return {
@@ -259,6 +260,23 @@ export default{
               })
             }
           })
+        }
+      })
+    },
+    submitGrant () {
+      //获取rids
+      //  console.log(this.$refs.tree.getCheckedKeys())
+      let rids = this.$refs.tree.getCheckedKeys().join(',')
+      // 发送请求
+      grantRoles (this.cuurentRole.id,{rids:rids}).then(res => {
+        // console.log(res)
+        if (res.meta.status === 200) {
+          this.$message({
+            type:'success',
+            message:res.meta.msg
+          })
+          this.RoleDialogFormVisible = false
+          this.initRoleList()
         }
       })
     }
