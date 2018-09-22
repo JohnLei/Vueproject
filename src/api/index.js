@@ -50,3 +50,4 @@ export const grantRoles = (roleId, rids) => Axios.post(`roles/${roleId}/rights`,
 export const getMenus = () => Axios.get('menus').then(res => res.data)
 // 商品数据分类列表
 export const getCategory = params => Axios.get('categories', {params: params}).then(res => res.data)
+//

@@ -12,18 +12,18 @@
     </el-row>
     <!-- 添加分类 -->
     <el-row>
-    <el-col :span="24">
-    <el-button type="success" plain @click="addDialogFormVisible=true">添加分类</el-button>
-    </el-col>
+        <el-col :span="24">
+        <el-button type="success" plain @click="addCategory">添加分类</el-button>
+        </el-col>
     </el-row>
     <!-- 树形组件 -->
     <tree-grid
-    :treeStructure="true"
-    :columns="columns"
-    :data-source="dataSource"
-    @deleteCate="deleteCategory"
-    @editCate="editCategory"
-    >
+        :treeStructure="true"
+        :columns="columns"
+        :data-source="dataSource"
+        @deleteCate="deleteCategory"
+        @editCate="editCategory"
+        >
     </tree-grid>
     <!-- 分页 -->
      <div class="page">
@@ -37,6 +37,26 @@
         :total="total">
     </el-pagination>
     </div>
+    <!-- 添加分类对话框 -->
+    <el-dialog title="添加分类" :visible.sync="addDialogFormVisible">
+        <el-form :model="addForm" label-width="80px" :rules="rules" ref="addCateForm">
+        <el-form-item label="分类名称" prop="cat_name">
+            <el-input v-model="addForm.cat_name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="父级名称">
+            <el-cascader
+            :options="options"
+            v-model="selectedOptions"
+            :props="props"
+            @change="handleChange">
+            </el-cascader>
+        </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="addDialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addCateSubmit('addCateForm')">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 </template>
            
@@ -47,8 +67,22 @@ export default {
     data () {
         return {
             addDialogFormVisible:false,
-            pagesize:10,
+            pagesize:5,
             pagenum:1,
+            addForm:{
+              cat_name:''  
+            },
+            rules : {
+            cat_name: [{ 
+                required: true, message: '请输入分类名', trigger: 'blur'
+                }]
+            },
+            options:[], //级联选择器的数据源
+            props: {    //表示配置级联选择器展示的数据
+                value:'cat_id',
+                label:'cat_name'
+            },
+            selectedOptions:[], //级联选择器选择后的数据
                 columns: [
             {
                 text: "分类名称",
@@ -90,11 +124,26 @@ export default {
       },
       initcategory () {
           getCategory ({type:'3',pagenum:this.pagenum,pagesize:this.pagesize}).then(res => {
-              console.log(res)
+            //   console.log(res)
             if (res.meta.status === 200) {
                 this.total = res.data.total
                 this.dataSource = res.data.result
             }
+          })
+      },
+      // 定义级联选择器handleChange事件
+      handleChange (value) {
+          console.log(value)
+      },
+      // 点击添加分类时获取分类数据
+      addCategory () {
+          this.addDialogFormVisible = true
+          // 发送分类列表请求
+          getCategory ({type:'2'}).then(res => {
+              console.log(res)
+              if (res.meta.status === 200) {
+                  this.options = res.data
+              }
           })
       }
     },
