@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import router from '@/router/index'
 const baseURL = 'http://www.lovegf.cn:8888/api/private/v1/' // 配置baseURL
 Axios.defaults.baseURL = baseURL
 // axios进行拦截器
@@ -12,6 +13,16 @@ Axios.interceptors.request.use(function (config) {
   return config
 }, function (erro) {
   // Do something with request error
+  return Promise.reject(erro)
+})
+// token失效的时候响应拦截
+Axios.interceptors.response.use(function (response) {
+  if (response.data.meta.status === 400) {
+    router.push('/login')
+  }
+  // console.log(response)
+  return response
+}, function (erro) {
   return Promise.reject(erro)
 })
 // 导出登录验证checklogin方法
