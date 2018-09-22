@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from '@/views/login'
-import home from '@/views/Home'
-import welcome from '@/views/Welcome'
-import user from '@/views/user/User'
-import rights from '@/views/rights/Rights'
-import role from '@/views/rights/Role'
-
+// import login from '@/views/login'
+// import home from '@/views/Home'
+// import welcome from '@/views/Welcome'
+// import user from '@/views/user/User'
+// import rights from '@/views/rights/Rights'
+// import role from '@/views/rights/Role'
 Vue.use(Router)
 
 const router = new Router({
@@ -14,33 +13,40 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      component: login
+      // component: login
+      component: resolve => require(['@/views/login'], resolve)
+
     },
     {
       path: '/',
       name: 'home',
-      component: home,
+      // component: home,
+      component: resolve => require(['@/views/Home'], resolve),
       redirect: '/welcome',
       children: [
         {
           path: 'welcome',
           name: 'welcome',
-          component: welcome
+          // component: welcome
+          component: resolve => require(['@/views/Welcome'], resolve)
         },
         {
-          path: 'user',
-          name: 'user',
-          component: user
+          path: 'users',
+          name: 'users',
+          // component: user
+          component: resolve => require(['@/views/user/User'], resolve)
         },
         {
           path: 'rights',
           name: 'rights',
-          component: rights
+          // component: rights
+          component: resolve => require(['@/views/rights/Rights'], resolve)
         },
         {
-          path: 'role',
-          name: 'role',
-          component: role
+          path: 'roles',
+          name: 'roles',
+          // component: role
+          component: resolve => require(['@/views/rights/Role'], resolve)
         }
       ]
     }

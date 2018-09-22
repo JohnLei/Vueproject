@@ -263,6 +263,7 @@ export default{
         }
       })
     },
+    // 角色授权功能
     submitGrant () {
       //获取rids
       //  console.log(this.$refs.tree.getCheckedKeys())

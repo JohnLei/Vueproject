@@ -14,18 +14,18 @@
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
-            <el-submenu index="1">
+            <el-submenu :index="items.path" v-for="items in menuData" :key="items.id">
                 <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>用户管理</span>
+                <span>{{items.authName}}</span>
                 </template>
-                 <el-menu-item index="/user">
+                 <el-menu-item :index="target.path" v-for="target in items.children" :key="target.id">
                 <i class="el-icon-menu"></i>
-                <span slot="title">用户列表</span>
+                <span slot="title">{{target.authName}}</span>
             </el-menu-item>
             </el-submenu>
             <!-- 权限管理 -->
-            <el-submenu index="2">
+            <!-- <el-submenu index="2">
                 <template slot="title">
                 <i class="el-icon-location"></i>
                 <span>权限管理</span>
@@ -38,7 +38,7 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">权限列表</span>
             </el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
             </el-menu>
         </el-aside>
     <el-container>
@@ -57,11 +57,12 @@
 </template>
 <script>
     //导入getUserList方法
-    import {getUserList} from '@/api'
+    import {getUserList,getMenus} from '@/api'
     export default {
         data () {
             return {
-                isCollapse:false
+                isCollapse:false,
+                menuData:[]
             }
         },
             methods: {
@@ -89,6 +90,13 @@
             }
         }).then(res => {
             // console.log(res)
+        })
+        //动态获取侧边栏数据
+        getMenus ().then(res => {
+            // console.log(res)
+            if (res.meta.status === 200) {
+                this.menuData = res.data
+            }
         })
     }
 }
