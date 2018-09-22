@@ -42,10 +42,13 @@
            
 <script>
 import TreeGrid from '@/components/TreeGrid/TreeGrid'
+import {getCategory} from '@/api'
 export default {
     data () {
         return {
             addDialogFormVisible:false,
+            pagesize:10,
+            pagenum:1,
                 columns: [
             {
                 text: "分类名称",
@@ -76,14 +79,30 @@ export default {
         },
          handleSizeChange(val) {
         console.log(`每页 ${val} 条`)
+        this.pagesize = val
+        this.initcategory()
 
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`)
+        this.pagenum = val
+        this.initcategory()
+      },
+      initcategory () {
+          getCategory ({type:'3',pagenum:this.pagenum,pagesize:this.pagesize}).then(res => {
+              console.log(res)
+            if (res.meta.status === 200) {
+                this.total = res.data.total
+                this.dataSource = res.data.result
+            }
+          })
       }
     },
     components:{
         TreeGrid
+    },
+    created() {
+        this.initcategory()
     }
 }
 </script>

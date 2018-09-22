@@ -48,3 +48,5 @@ export const deleteRolesRight = params => Axios.delete(`roles/${params.roleId}/r
 export const grantRoles = (roleId, rids) => Axios.post(`roles/${roleId}/rights`, rids).then(res => res.data)
 // 获取左侧侧边栏菜单权限
 export const getMenus = () => Axios.get('menus').then(res => res.data)
+// 商品数据分类列表
+export const getCategory = params => Axios.get('categories', {params: params}).then(res => res.data)
