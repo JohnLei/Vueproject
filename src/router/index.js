@@ -47,6 +47,11 @@ const router = new Router({
           name: 'roles',
           // component: role
           component: resolve => require(['@/views/rights/Role'], resolve)
+        },
+        {
+          path: 'categories',
+          name: 'categories',
+          component: resolve => require(['@/views/category/Category'], resolve)
         }
       ]
     }
