@@ -62,7 +62,7 @@
            
 <script>
 import TreeGrid from '@/components/TreeGrid/TreeGrid'
-import {getCategory} from '@/api'
+import {getCategory,addCategory} from '@/api'
 export default {
     data () {
         return {
@@ -70,7 +70,9 @@ export default {
             pagesize:5,
             pagenum:1,
             addForm:{
-              cat_name:''  
+              cat_name:'',
+              cat_pid:0,
+              cat_level:0  
             },
             rules : {
             cat_name: [{ 
@@ -135,17 +137,47 @@ export default {
       handleChange (value) {
           console.log(value)
       },
-      // 点击添加分类时获取分类数据
+      // 点击添加分类按钮时获取分类数据
       addCategory () {
           this.addDialogFormVisible = true
           // 发送分类列表请求
           getCategory ({type:'2'}).then(res => {
-              console.log(res)
+            //   console.log(res)
               if (res.meta.status === 200) {
                   this.options = res.data
               }
           })
-      }
+      },
+      // 点击添加时触发的事件
+      addCateSubmit (forName) {
+          this.$refs[forName].validate(valide => {
+              if (valide) {
+                  //添加一级分类
+                  if (this.selectedOptions.length === 0) {
+                      this.addForm.cat_pid = 0
+                      this.addForm.cat_level = 0
+                  } else if (this.selectedOptions.length === 1) {
+                      this.addForm.cat_pid = this.selectedOptions[0]
+                      this.addForm.cat_level = 1
+                  } else {
+                      this.addForm.cat_pid = this.selectedOptions[0]
+                      this.addForm.cat_level = 2
+                  }
+                  //添加数据的发送请求
+                  addCategory (this.addForm).then(res => {
+                      console.log(res)
+                      if (res.meta.status === 201) {
+                          this.addDialogFormVisible = false
+                          this.initcategory()
+                          this.$message({
+                          type: "success",
+                          message: res.meta.msg
+                       });
+                      }
+                  })
+              }
+          })
+        }
     },
     components:{
         TreeGrid
