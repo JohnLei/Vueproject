@@ -52,6 +52,16 @@ const router = new Router({
           path: 'categories',
           name: 'categories',
           component: resolve => require(['@/views/category/Category'], resolve)
+        },
+        {
+          path: 'reports',
+          name: 'reports',
+          component: resolve => require(['@/views/reports/Reports'], resolve)
+        },
+        {
+          path: 'goods',
+          name: 'goods',
+          component: resolve => require(['@/views/goods/Goods'], resolve)
         }
       ]
     }

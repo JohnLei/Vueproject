@@ -63,3 +63,5 @@ export const getMenus = () => Axios.get('menus').then(res => res.data)
 export const getCategory = params => Axios.get('categories', {params: params}).then(res => res.data)
 // 添加分类
 export const addCategory = params => Axios.post('categories', params).then(res => res.data)
+// 饼状图
+export const Report = params => Axios.get(`reports/${params.type}`).then(res => res.data)
